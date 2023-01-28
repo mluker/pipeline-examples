@@ -1,0 +1,72 @@
+trigger:
+  branches:
+    - main
+
+pr:
+- main
+
+variables:
+  - name: WORKFLOW_VAR
+    value: 'workflow-var-value'
+
+resources:
+  containers:
+    - container: oci-registry
+      image: ghcr.io/oras-project/registry@sha256:321aaa9de1049b3988a8cb7e4ae2043ec13df78bf140b5335b015823e9779da3 #v1.0.0-rc.4
+      ports:
+        - '5000:5000'
+
+jobs:
+  JobOne:
+    name: "Job One"
+    runs-on: ubuntu-latest
+
+  outputs:
+    JobOneVariableOutput: ${{ steps.JobOneStepTwo.outputs.JOB1_GH_OUTPUT_VAR }}
+
+  services:
+    oci-registry: oci-registry
+
+  variables:
+    - name: JOBS_VAR
+      value: 'jobs-var-value'
+
+  steps:
+  - name: "Job One - Step One"
+    run: |
+      set -euo pipefail
+      echo $JOBS_VAR
+      echo $JOB1_STEP1_VAR
+
+    env:
+      JOB1_STEP1_VAR: 'Hello from Job1 - Step1'
+
+  - name: "Job One - Step Two"
+    id: JobOneStepTwo
+    run: |
+      echo "WORKFLOW_VAR: $WORKFLOW_VAR"
+      echo "JOBS_VAR: $JOBS_VAR"
+      echo "JOB1_STEP1_VAR: $JOB1_STEP1_VAR"
+      echo "JOB2_STEP2_VAR: $JOB1_STEP2_VAR"
+
+      echo "JOB1_GH_ENV_VAR=job2-gh-env-var-value" >> $GITHUB_ENV
+      echo "JOB1_GH_OUTPUT_VAR=job2-gh-output-var-value" >> $GITHUB_OUTPUT
+
+    env:
+      JOB1_STEP2_VAR: 'Hello from Job1 - Step2'
+
+  JobTwo:
+  needs: [JobOne]
+  name: "Job Two"
+  runs-on: ubuntu-latest
+
+  steps:
+  - name: "Job Two - Step One"
+    run: |
+      echo "WORKFLOW_VAR: $WORKFLOW_VAR"
+      echo "JOBS_VAR: $JOBS_VAR"
+      echo "JOB1_STEP1_VAR: $JOB1_STEP1_VAR"
+      echo "JOB2_STEP2_VAR: $JOB2_STEP2_VAR"
+
+      echo "JOB1_GH_ENV_VAR: $JOB1_GH_ENV_VAR"
+      echo ${{ needs.JobOne.outputs.JOB1_GH_OUTPUT_VAR }}
