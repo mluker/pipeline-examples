@@ -1,58 +1,48 @@
 name: Sample GitHub Pipeline
 
-trigger:
-  branches:
-    - main
-
-pr:
-- main
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+  push:
 
 env:
   WORKFLOW_VAR: "workflow-var-value"
-
-resources:
-  containers:
-    - container: oci-registry
-      image: ghcr.io/oras-project/registry@sha256:321aaa9de1049b3988a8cb7e4ae2043ec13df78bf140b5335b015823e9779da3 #v1.0.0-rc.4
-      ports:
-        - '5000:5000'
 
 jobs:
   JobOne:
     name: "Job One"
     runs-on: ubuntu-latest
 
-  outputs:
-    JobOneVariableOutput: ${{ steps.JobOneStepTwo.outputs.JOB1_GH_OUTPUT_VAR }}
+    outputs:
+      JobOneVariableOutput: ${{ steps.JobOneStepTwo.outputs.JOB1_GH_OUTPUT_VAR }}
 
-  services:
-    oci-registry: oci-registry
+    env:
+      JOBS_VAR: "jobs-var-value"
 
-  env:
-    JOBS_VAR: "jobs-var-value"
+    steps:
+      - name: "Job1 - Step1"
+        run: |
+          set -euo pipefail
+          echo $JOBS_VAR
+          echo $JOB1_STEP1_VAR
 
-  steps:
-    - name: "Job1 - Step1"
-      run: |
-        set -euo pipefail
-        echo $JOBS_VAR
-        echo $JOB1_STEP1_VAR
-
-      env:
-        JOB1_STEP1_VAR: 'Hello from Job1 - Step1'
+        env:
+          JOB1_STEP1_VAR: 'Hello from Job1 - Step1'
     
-    - name: "Job1 - Step2"
-      id: Job1Step2
-      run: |
-        echo "WORKFLOW_VAR: $WORKFLOW_VAR"
-        echo "JOBS_VAR: $JOBS_VAR"
-        echo "JOB1_STEP1_VAR: $JOB1_STEP1_VAR"
-        echo "JOB2_STEP2_VAR: $JOB1_STEP2_VAR"
-        echo "JOB1_GH_ENV_VAR=job2-gh-env-var-value" >> $GITHUB_ENV
-        echo "JOB1_GH_OUTPUT_VAR=job2-gh-output-var-value" >> $GITHUB_OUTPUT
+      - name: "Job1 - Step2"
+        id: Job1Step2
+        run: |
+          echo "WORKFLOW_VAR: $WORKFLOW_VAR"
+          echo "JOBS_VAR: $JOBS_VAR"
+          echo "JOB1_STEP1_VAR: $JOB1_STEP1_VAR"
+          echo "JOB2_STEP2_VAR: $JOB1_STEP2_VAR"
+          echo "JOB1_GH_ENV_VAR=job2-gh-env-var-value" >> $GITHUB_ENV
+          echo "JOB1_GH_OUTPUT_VAR=job2-gh-output-var-value" >> $GITHUB_OUTPUT
 
-      env:
-        JOB1_STEP2_VAR: 'Hello from Job1 - Step2'
+        env:
+          JOB1_STEP2_VAR: 'Hello from Job1 - Step2'
 
   JobTwo:
     needs: [JobOne]
