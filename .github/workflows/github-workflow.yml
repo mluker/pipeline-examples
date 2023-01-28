@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      JobOneVariableOutput: ${{ steps.JobOneStepTwo.outputs.JOB1_GH_OUTPUT_VAR }}
+      JobOneVariableOutput: ${{ steps.Job1Step2.outputs.JOB1_GH_OUTPUT_VAR }}
 
     env:
       JOBS1_VAR: "jobs1-var-value"
