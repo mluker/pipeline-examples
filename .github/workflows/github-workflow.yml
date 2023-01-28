@@ -25,8 +25,8 @@ jobs:
       - name: "Job1 - Step1"
         run: |
           set -euo pipefail
-          echo $JOBS_VAR
-          echo $JOB1_STEP1_VAR
+          echo "JOBS_VAR::$JOBS_VAR"
+          echo "JOB1_STEP1_VAR::$JOB1_STEP1_VAR"
 
         env:
           JOB1_STEP1_VAR: 'Hello from Job1 - Step1'
@@ -34,10 +34,10 @@ jobs:
       - name: "Job1 - Step2"
         id: Job1Step2
         run: |
-          echo "WORKFLOW_VAR: $WORKFLOW_VAR"
-          echo "JOBS_VAR: $JOBS_VAR"
-          echo "JOB1_STEP1_VAR: $JOB1_STEP1_VAR"
-          echo "JOB2_STEP2_VAR: $JOB1_STEP2_VAR"
+          echo "WORKFLOW_VAR::$WORKFLOW_VAR"
+          echo "JOBS_VAR::$JOBS_VAR"
+          echo "JOB1_STEP1_VAR::$JOB1_STEP1_VAR"
+          echo "JOB2_STEP2_VAR::$JOB1_STEP2_VAR"
           echo "JOB1_GH_ENV_VAR=job2-gh-env-var-value" >> $GITHUB_ENV
           echo "JOB1_GH_OUTPUT_VAR=job2-gh-output-var-value" >> $GITHUB_OUTPUT
 
@@ -52,9 +52,9 @@ jobs:
     steps:
     - name: "Job2 - Step1"
       run: |
-        echo "WORKFLOW_VAR: $WORKFLOW_VAR"
-        echo "JOBS_VAR: $JOBS_VAR"
-        echo "JOB1_STEP1_VAR: $JOB1_STEP1_VAR"
-        echo "JOB2_STEP2_VAR: $JOB2_STEP2_VAR"
-        echo "JOB1_GH_ENV_VAR: $JOB1_GH_ENV_VAR"
+        echo "WORKFLOW_VAR::$WORKFLOW_VAR"
+        echo "JOBS_VAR::$JOBS_VAR"
+        echo "JOB1_STEP1_VAR::$JOB1_STEP1_VAR"
+        echo "JOB2_STEP2_VAR::$JOB2_STEP2_VAR"
+        echo "JOB1_GH_ENV_VAR::$JOB1_GH_ENV_VAR"
         echo ${{ needs.JobOne.outputs.JOB1_GH_OUTPUT_VAR }}
