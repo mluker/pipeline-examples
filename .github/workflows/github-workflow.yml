@@ -55,6 +55,6 @@ jobs:
         echo "WORKFLOW_VAR::$WORKFLOW_VAR"
         echo "JOBS_VAR::$JOBS_VAR"
         echo "JOB1_STEP1_VAR::$JOB1_STEP1_VAR"
-        echo "JOB2_STEP2_VAR::$JOB2_STEP2_VAR"
-        echo "JOB1_GH_ENV_VAR::$JOB1_GH_ENV_VAR"
-        echo ${{ needs.JobOne.outputs.JOB1_GH_OUTPUT_VAR }}
+        echo "JOB1_STEP2_VAR::$JOB1_STEP2_VAR"
+        echo "JOB1_GH_ENV_VAR::$JOB1_GH_ENV_VAR"        
+        echo "JOB1_GH_OUTPUT_VAR::${{ needs.JobOne.outputs.JOB1_GH_OUTPUT_VAR }}"
