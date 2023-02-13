@@ -1,0 +1,33 @@
+trigger: none
+
+variables:
+- group: var-group-name
+- name: sample_var
+  value: sample_value
+
+jobs:
+- job: Build
+  displayName: 'Build Sample'  
+  variables:
+    - name: job_var
+      value: job_var_value
+  steps:
+  - bash: |
+      echo "hello, world $ENV_VAR_SAMPLE"
+      echo "##vso[task.setvariable variable=STEP_OUTPUT_EXAMPLE;isOutput=true;]SOME_VALUE"
+    displayName: "Sample Job"
+    name: BuildStep
+    env:
+      ENV_VAR_SAMPLE: env_var_value    
+
+- job: Deploy
+  dependsOn: Build
+  variables:
+    CONSUME_OUTPUT_EXAMPLE: $[ dependencies.Build.outputs['BuildStep.STEP_OUTPUT_EXAMPLE'] ]
+  steps:
+  - bash: |
+      echo "hello, world $ENV_VAR_OUTPUT, $VAR_GROUP_VARIABLE"      
+    displayName: "Sample Job"
+    name: BuildStep
+    env:
+      ENV_VAR_OUTPUT: $(CONSUME_OUTPUT_EXAMPLE)
